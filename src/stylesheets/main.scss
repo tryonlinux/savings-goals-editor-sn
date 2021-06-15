@@ -1,9 +1,9 @@
-@import '~sn-stylekit/dist/stylekit.css';
+@import "~sn-stylekit/dist/stylekit.css";
 
 :root {
   --sn-stylekit-font-size-editor: 16px;
   --sn-stylekit-monospace-font: SFMono-Regular, Consolas, Liberation Mono, Menlo,
-    'Ubuntu Mono', courier, monospace;
+    "Ubuntu Mono", courier, monospace;
 }
 
 @media screen and (max-width: 650px) {
@@ -76,5 +76,15 @@ p {
   padding: 0px 1em;
 }
 
-@import './print.scss';
-@import './dark.scss';
+.progress {
+  height: 30px;
+} // we increased it so the text is visible or change font size
+.progress .sr-only {
+  position: relative;
+}
+ul {
+  list-style: none;
+}
+
+@import "./print.scss";
+@import "./dark.scss";

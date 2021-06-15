@@ -1,24 +1,32 @@
-import React from 'react';
-import { EditorKit, EditorKitDelegate } from 'sn-editor-kit';
-
+import React from "react";
+import { Container } from "react-bootstrap";
+import { EditorKit, EditorKitDelegate } from "sn-editor-kit";
+import Goals from "./Goals";
 export enum HtmlElementId {
-  snComponent = 'sn-component',
-  textarea = 'textarea',
+  snComponent = "sn-component",
+  textarea = "textarea",
 }
 
 export enum HtmlClassName {
-  snComponent = 'sn-component',
-  textarea = 'sk-input contrast textarea',
+  snComponent = "sn-component",
+  textarea = "sk-input contrast textarea",
 }
 
 export interface EditorInterface {
   printUrl: boolean;
   text: string;
+  goals: { id: string; itemGoalCost: number; name: string }[];
 }
 
 const initialState = {
   printUrl: false,
-  text: '',
+  text: "",
+  goals: [
+    { id: "1", itemGoalCost: 200, name: "Apple Watch" },
+    { id: "2", itemGoalCost: 1200, name: "Macbook" },
+    { id: "3", itemGoalCost: 45000, name: "Tesla" },
+    { id: "4", itemGoalCost: 65000, name: "Addtion" },
+  ],
 };
 
 let keyMap = new Map();
@@ -30,6 +38,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     super(props);
     this.configureEditorKit();
     this.state = initialState;
+    this.updateGoals = this.updateGoals.bind(this);
   }
 
   configureEditorKit = () => {
@@ -47,7 +56,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
 
     this.editorKit = new EditorKit({
       delegate: delegate,
-      mode: 'plaintext',
+      mode: "plaintext",
       supportsFilesafe: false,
     });
   };
@@ -72,7 +81,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     try {
       this.editorKit.onEditorValueChanged(text);
     } catch (error) {
-      console.log('Error saving note:', error);
+      console.log("Error saving note:", error);
     }
   };
 
@@ -83,7 +92,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
   onKeyDown = (e: React.KeyboardEvent | KeyboardEvent) => {
     keyMap.set(e.key, true);
     // Do nothing if 'Control' and 's' are pressed
-    if (keyMap.get('Control') && keyMap.get('s')) {
+    if (keyMap.get("Control") && keyMap.get("s")) {
       e.preventDefault();
     }
   };
@@ -92,17 +101,27 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     keyMap.delete(e.key);
   };
 
+  updateGoals(goals: { id: string; itemGoalCost: number; name: string }[]) {
+    this.setState({
+      goals,
+    });
+  }
+
   render() {
     const { text } = this.state;
     return (
       <div
         className={
-          HtmlElementId.snComponent + (this.state.printUrl ? ' print-url' : '')
+          HtmlElementId.snComponent + (this.state.printUrl ? " print-url" : "")
         }
         id={HtmlElementId.snComponent}
         tabIndex={0}
       >
-        <p>
+        <Container fluid>
+          <Goals goals={this.state.goals} updateGoals={this.updateGoals} />
+        </Container>
+
+        {/* <p>
           Edit <code>src/components/Editor.tsx</code> and save to reload.
         </p>
         <p>
@@ -123,7 +142,9 @@ export default class Editor extends React.Component<{}, EditorInterface> {
             Learn React
           </a>
           .
-        </p>
+        </p> */}
+
+        {/*
         <textarea
           id={HtmlElementId.textarea}
           name="text"
@@ -137,7 +158,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
           onFocus={this.onFocus}
           onKeyDown={this.onKeyDown}
           onKeyUp={this.onKeyUp}
-        />
+        /> */}
       </div>
     );
   }
