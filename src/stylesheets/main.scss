@@ -86,5 +86,17 @@ ul {
   list-style: none;
 }
 
+#header {
+  border-bottom: 1px solid var(--sn-stylekit-border-color);
+  background-color: var(--sn-stylekit-background-color);
+  color: var(--sn-stylekit-foreground-color);
+
+  min-height: 26px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 @import "./print.scss";
 @import "./dark.scss";

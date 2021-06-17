@@ -1,12 +1,14 @@
 import * as React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Goal } from "./Editor";
 import SavingsCard from "./SavingsCard";
 
 export interface GoalsProps {
-  goals: { id: string; itemGoalCost: number; name: string }[];
-  updateGoals: (
-    goals: { id: string; itemGoalCost: number; name: string }[]
-  ) => void;
+  goals: { index: number; id: string; itemGoalCost: number; name: string }[];
+  updateGoals: (goals: Goal[]) => void;
+  editGoal: (goalID: string) => void;
+  deleteGoal: (goalID: string) => void;
+  savingsBalance: number;
 }
 
 export interface GoalsState {}
@@ -28,7 +30,6 @@ class Goals extends React.Component<GoalsProps, GoalsState> {
   }
 
   render() {
-    let bankBalance = 350;
     return (
       <DragDropContext onDragEnd={this.handleOnDragEnd}>
         <Droppable droppableId="characters">
@@ -48,8 +49,10 @@ class Goals extends React.Component<GoalsProps, GoalsState> {
                         {...provided.dragHandleProps}
                       >
                         <SavingsCard
+                          editGoal={this.props.editGoal}
+                          deleteGoal={this.props.deleteGoal}
                           index={index}
-                          bankBalance={bankBalance}
+                          bankBalance={this.props.savingsBalance}
                           id={id}
                           itemGoalCost={itemGoalCost}
                           name={name}

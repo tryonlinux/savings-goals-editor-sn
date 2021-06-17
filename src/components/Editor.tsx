@@ -1,6 +1,11 @@
+//todo sprinkle comments
+//todo code cleanup
+import { PlusCircleIcon } from "@primer/octicons-react";
 import React from "react";
-import { Container } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { EditorKit, EditorKitDelegate } from "sn-editor-kit";
+import Balance from "./Balance";
+import GoalItem from "./GoalItem";
 import Goals from "./Goals";
 export enum HtmlElementId {
   snComponent = "sn-component",
@@ -11,22 +16,37 @@ export enum HtmlClassName {
   snComponent = "sn-component",
   textarea = "sk-input contrast textarea",
 }
+export interface Goal {
+  index: number;
+  id: string;
+  itemGoalCost: number;
+  name: string;
+}
 
 export interface EditorInterface {
   printUrl: boolean;
   text: string;
-  goals: { id: string; itemGoalCost: number; name: string }[];
+  goals: Goal[];
+  savingsBalance: number;
+  addGoal: boolean;
+  editGoal: boolean;
+  loaded: boolean;
+  editGoalID?: string;
 }
-
+//todo update this block of code to set the correct initalstate after reading from editorkit
 const initialState = {
   printUrl: false,
   text: "",
   goals: [
-    { id: "1", itemGoalCost: 200, name: "Apple Watch" },
-    { id: "2", itemGoalCost: 1200, name: "Macbook" },
-    { id: "3", itemGoalCost: 45000, name: "Tesla" },
-    { id: "4", itemGoalCost: 65000, name: "Addtion" },
+    { index: 1, id: "1", itemGoalCost: 200, name: "Apple Watch" },
+    { index: 2, id: "2", itemGoalCost: 1200, name: "Macbook" },
+    { index: 0, id: "3", itemGoalCost: 45000, name: "Tesla" },
+    { index: 3, id: "4", itemGoalCost: 65000, name: "Addition" },
   ],
+  addGoal: false,
+  editGoal: false,
+  savingsBalance: 30.0,
+  loaded: true,
 };
 
 let keyMap = new Map();
@@ -39,8 +59,15 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     this.configureEditorKit();
     this.state = initialState;
     this.updateGoals = this.updateGoals.bind(this);
+    this.updateSavingsBalance = this.updateSavingsBalance.bind(this);
+    this.onAddGoal = this.onAddGoal.bind(this);
+    this.onCancelAddGoal = this.onCancelAddGoal.bind(this);
+    this.updateIndexes = this.updateIndexes.bind(this);
+    this.handleSubmitOfGoal = this.handleSubmitOfGoal.bind(this);
+    this.editGoal = this.editGoal.bind(this);
+    this.deleteGoal = this.deleteGoal.bind(this);
   }
-
+  //TODO read goals from editorkit
   configureEditorKit = () => {
     let delegate = new EditorKitDelegate({
       /** This loads every time a different note is loaded */
@@ -101,10 +128,69 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     keyMap.delete(e.key);
   };
 
-  updateGoals(goals: { id: string; itemGoalCost: number; name: string }[]) {
-    this.setState({
-      goals,
+  updateGoals(
+    goals: { index: number; id: string; itemGoalCost: number; name: string }[]
+  ) {
+    this.setState(
+      {
+        goals,
+      },
+      () => {
+        this.updateIndexes();
+      }
+    );
+  }
+  updateIndexes() {
+    let updateGoals = this.state.goals.map((goalItem, index) => {
+      goalItem.index = index;
+      return goalItem;
     });
+    this.setState({ goals: updateGoals });
+  }
+  updateSavingsBalance(savingsBalance: number): void {
+    this.setState({
+      savingsBalance,
+    });
+  }
+
+  onAddGoal() {
+    this.setState({
+      addGoal: true,
+      editGoal: false,
+    });
+  }
+
+  onCancelAddGoal = () => {
+    this.setState({
+      addGoal: false,
+      editGoal: false,
+      // editID: "",
+    });
+  };
+  //change me to check out edit mode
+  handleSubmitOfGoal(goal: Goal): void {
+    if (this.state.editGoal) {
+      //Todo write this code to update a goal
+    } else {
+      this.setState(
+        { goals: [...this.state.goals, goal], addGoal: false, editGoal: false },
+        () => {
+          this.updateIndexes();
+        }
+      );
+    }
+    //TODO save goals to editor
+  }
+  editGoal(goalID: string) {
+    this.setState({
+      addGoal: false,
+      editGoal: true,
+      editGoalID: goalID,
+    });
+  }
+  deleteGoal(goalID: string) {
+    //todo write code to delete a goal
+    alert(goalID);
   }
 
   render() {
@@ -118,47 +204,55 @@ export default class Editor extends React.Component<{}, EditorInterface> {
         tabIndex={0}
       >
         <Container fluid>
-          <Goals goals={this.state.goals} updateGoals={this.updateGoals} />
+          <div id="header">
+            <Row>
+              <Col>
+                <Button onClick={this.onAddGoal} variant="dark">
+                  <PlusCircleIcon size={16} />
+                </Button>
+              </Col>
+            </Row>
+          </div>
+
+          {this.state.loaded ? (
+            this.state.addGoal ? (
+              <GoalItem
+                onCancelAddGoal={this.onCancelAddGoal}
+                handleSubmit={this.handleSubmitOfGoal}
+                editMode={false}
+              />
+            ) : this.state.editGoal ? (
+              <GoalItem
+                onCancelAddGoal={this.onCancelAddGoal}
+                handleSubmit={this.handleSubmitOfGoal}
+                goal={this.state.goals.find(
+                  (goal) => goal.id === this.state.editGoalID
+                )}
+                editMode={true}
+              />
+            ) : (
+              <div>
+                <Balance
+                  savingsBalance={this.state.savingsBalance}
+                  updateSavingsBalance={this.updateSavingsBalance}
+                />
+                <Row>
+                  <Col>
+                    <Goals
+                      goals={this.state.goals}
+                      updateGoals={this.updateGoals}
+                      savingsBalance={this.state.savingsBalance}
+                      editGoal={this.editGoal}
+                      deleteGoal={this.deleteGoal}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            )
+          ) : (
+            <div>Loading...</div>
+          )}
         </Container>
-
-        {/* <p>
-          Edit <code>src/components/Editor.tsx</code> and save to reload.
-        </p>
-        <p>
-          Visit the{' '}
-          <a
-            href="https://docs.standardnotes.org/extensions/intro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Standard Notes documentation
-          </a>{' '}
-          to learn how to work with the Standard Notes API or{' '}
-          <a
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          .
-        </p> */}
-
-        {/*
-        <textarea
-          id={HtmlElementId.textarea}
-          name="text"
-          className={'sk-input contrast textarea'}
-          placeholder="Type here. Text in this textarea is automatically saved in Standard Notes"
-          rows={15}
-          spellCheck="true"
-          value={text}
-          onBlur={this.onBlur}
-          onChange={this.handleInputChange}
-          onFocus={this.onFocus}
-          onKeyDown={this.onKeyDown}
-          onKeyUp={this.onKeyUp}
-        /> */}
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Col, ProgressBar, Row } from "react-bootstrap";
+import { Badge, Card, Col, ProgressBar, Row } from "react-bootstrap";
 import ActionsCell from "./ActionsCell";
 export interface SavingsCardProps {
   index: number;
@@ -7,6 +7,8 @@ export interface SavingsCardProps {
   bankBalance: number;
   itemGoalCost: number;
   name: string;
+  editGoal: (goalID: string) => void;
+  deleteGoal: (goalID: string) => void;
 }
 
 export interface SavingsCardState {}
@@ -15,16 +17,8 @@ class SavingsCard extends React.Component<SavingsCardProps, SavingsCardState> {
   constructor(props: SavingsCardProps) {
     super(props);
     this.state = {};
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleViewEdit = this.handleViewEdit.bind(this);
   }
 
-  handleViewEdit(index: string) {
-    alert(index);
-  }
-  handleDelete(index: string) {
-    alert(index);
-  }
   progressBarColor(percentage: number): string {
     if (percentage >= 100) {
       return "success";
@@ -50,14 +44,26 @@ class SavingsCard extends React.Component<SavingsCardProps, SavingsCardState> {
     return (
       <div>
         <Card body>
-          <Card.Title>{this.props.name}</Card.Title>
+          <Card.Title>
+            {this.props.name}
+            <h5>
+              <Badge pill variant={this.progressBarColor(now)}>
+                ${this.props.bankBalance}
+              </Badge>{" "}
+              of{" "}
+              <Badge pill variant="primary">
+                ${this.props.itemGoalCost}
+              </Badge>
+            </h5>
+          </Card.Title>
+
           <Row>
             <Col sm={11}>{progressInstance}</Col>
             <Col sm={1}>
               <ActionsCell
                 id={this.props.id}
-                handleViewEdit={this.handleViewEdit}
-                handleDelete={this.handleDelete}
+                handleViewEdit={this.props.editGoal}
+                handleDelete={this.props.deleteGoal}
               />
             </Col>
           </Row>
