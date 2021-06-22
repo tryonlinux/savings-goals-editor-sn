@@ -18,7 +18,13 @@ class SavingsCard extends React.Component<SavingsCardProps, SavingsCardState> {
     super(props);
     this.state = {};
   }
-
+  /**
+   * Provides the name of the color you want to use for the progressBar/Badges depending on how close to your goals you are
+   *
+   * @param percentage - The percent of goal Cost divided by Savings Balance
+   * @returns - The string for correct coloring for bootstrap
+   *
+   */
   progressBarColor(percentage: number): string {
     if (percentage >= 100) {
       return "success";

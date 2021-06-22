@@ -23,7 +23,6 @@ class Balance extends React.Component<BalanceProps, BalanceState> {
   }
   handleInputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const target = event.target;
-    const name = target.name;
     const value = target.value;
 
     this.setState({
@@ -37,7 +36,13 @@ class Balance extends React.Component<BalanceProps, BalanceState> {
       this.saveBalance(value);
     }
   }
-
+  /**
+   * Internal function to make sure the value is validated before calling hte UpdateSavingsBalance function in the main Editor Component to save and update the State/Editor for the new balance
+   *
+   * @param balance - The Balance you want to save
+   * @returns void
+   *
+   */
   saveBalance(balance: string): void {
     if (balance) {
       this.setState(
@@ -52,6 +57,13 @@ class Balance extends React.Component<BalanceProps, BalanceState> {
     }
   }
   //TODO: Do input validation here and return 0 if bad
+  /**
+   * Validates the balance you type in to the Balance Text Box to make sure it is formatted correctly and converts to an number type
+   *
+   * @param value - The Balance you want to save as a string
+   * @returns - The value as a number parsed correctly
+   *
+   */
   moneyValidation(value: string): number {
     return parseFloat(value) || 0;
   }
@@ -66,7 +78,11 @@ class Balance extends React.Component<BalanceProps, BalanceState> {
         </Row>
         <Row>
           <Col md={{ span: 6, offset: 3 }}>
-            <Form>
+            <Form
+              onSubmit={(e: React.FormEvent) => {
+                e.preventDefault();
+              }}
+            >
               <Form.Group controlId="savingsBalance">
                 <Form.Control
                   type="text"

@@ -40,13 +40,24 @@ class GoalItem extends React.Component<GoalItemProps, GoalItemState> {
     }
     this.moneyValidation = this.moneyValidation.bind(this);
   }
+  /**
+   * Validates the goal cost you type in to the goal cost Text Box to make sure it is formatted correctly and converts to an number type
+   *
+   * @param value - The goal cost you want to save as a string
+   * @returns - The value as a number parsed correctly
+   *
+   */
   moneyValidation(value: string): number {
     return parseFloat(value) || 0;
   }
   render() {
     return (
       <div>
-        <Form>
+        <Form
+          onSubmit={(e: React.FormEvent) => {
+            e.preventDefault();
+          }}
+        >
           <Row>
             <Col>
               <h3 className="text-center">
@@ -95,6 +106,7 @@ class GoalItem extends React.Component<GoalItemProps, GoalItemState> {
               <Button
                 variant="success"
                 onClick={() => {
+                  //TODO bug -> don't allow 0 dollar or blank name
                   this.props.editMode
                     ? this.props.handleSubmit({
                         index: this.state.index,
