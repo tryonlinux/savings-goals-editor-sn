@@ -2,6 +2,9 @@
 
 This is an editor for Standard Notes that allows you to track your savings goals within the app. You can add your goals and prioritize them by dragging and dropping them in the order you wish.
 
+## Demo
+![](https://github.com/tryonlinux/savings-goals-editor-sn/blob/1daaf51eebaea57b01d1eb1d8e5ce5d343e6db2a/Savings%20Editor%20SN.gif)
+
 ## Development
 
 **Prerequisites:** Install [Node.js](https://nodejs.org/en/), [Yarn](https://classic.yarnpkg.com/en/docs/install/), and [Git](https://github.com/git-guides/install-git) on your computer.
