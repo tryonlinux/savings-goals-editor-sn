@@ -70,7 +70,6 @@ export default class Editor extends React.Component<{}, EditorInterface> {
         if (text) {
           let data = JSON.parse(text);
           this.setState({
-            ...initialState,
             goals: data.goals,
             savingsBalance: data.savingsBalance,
             text,
@@ -78,7 +77,6 @@ export default class Editor extends React.Component<{}, EditorInterface> {
           });
         } else {
           this.setState({
-            ...initialState,
             loaded: true,
             text,
           });
