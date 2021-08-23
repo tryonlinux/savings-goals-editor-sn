@@ -5,6 +5,9 @@ This is an editor for Standard Notes that allows you to track your savings goals
 ## Demo
 ![](https://github.com/tryonlinux/savings-goals-editor-sn/blob/1daaf51eebaea57b01d1eb1d8e5ce5d343e6db2a/Savings%20Editor%20SN.gif)
 
+## Install
+Install Link: https://listed.to/p/fNEOvjATLP
+
 ## Support
 
 [Buy me a Coffee](https://www.buymeacoffee.com/tryomas)
