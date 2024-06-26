@@ -1,4 +1,4 @@
-# Savings Goal Editor for Standard Notes
+# Savings Goal Editor for Standard Notes -- Archived, feel free to fork and self-host 
 
 This is an editor for Standard Notes that allows you to track your savings goals within the app. You can add your goals and prioritize them by dragging and dropping them in the order you wish.
 
